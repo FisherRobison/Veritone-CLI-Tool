@@ -1,2 +1,2 @@
 # Veritone-CLI-Tool
-CLI for many day2day tasks needed with the Veritone API.
+Command Line Tool for day 2 day tasks around the Veritone API.
