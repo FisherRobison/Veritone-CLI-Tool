@@ -1,0 +1,30 @@
+{
+  "name": "clitool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "veritone.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.16.0",
+    "dotenv": "^6.0.0",
+    "form-data": "^2.3.2",
+    "inquirer": "^6.0.0",
+    "isomorphic-fetch": "^2.2.1",
+    "request": "^2.87.0",
+    "twilio": "^3.19.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.2"
+  },
+  "bin": {
+    "veritone": "./veritone.js"
+  }
+}
