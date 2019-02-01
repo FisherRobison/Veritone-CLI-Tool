@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-var questions = require('./questions');
 var program = require('commander');
+var chalk = require("chalk");
+var inquirer = require('inquirer'); // require inquirerjs library
+
+var questions = require('./questions');
 // Require logic.js file and extract controller functions using JS destructuring assignment
 
 var _require = require('./logic'),
@@ -17,20 +20,26 @@ var _require = require('./logic'),
     logout = _require.logout,
     checkForAuth = _require.checkForAuth;
 
-var inquirer = require('inquirer'); // require inquirerjs library
 var prompt = inquirer.createPromptModule();
-var chalk = require("chalk");
 
 program.version('0.0.1').description('Veritone cli tool');
 
-program.command('login').alias('l').description('Login to veritone').action(function () {
-  prompt(questions.loginQuestions).then(function (answers) {
-    return login(answers).then(function (response) {
-      console.log(chalk.green.bold(response));
-    });
-  });
+program.command('login').alias('l').description('Login to veritone').action(async function () {
+  try {
+    var answers = await prompt(questions.loginQuestions);
+    var res = await login(answers);
+    console.log(chalk.green.bold(res));
+    //  if(res === 'unpwError'){
+    //   console.log(chalk.red.bold(res));
+    //  }else{
+    //   console.log(chalk.green.bold(res));
+    //  }
+  } catch (err) {
+    //chalk.red.bold(res)
+    console.log(chalk.red.bold(err));
+  }
 });
-program.command('logout').alias('lO').description('Logout of Org').action(async function () {
+program.command('logout').alias('lO').description('Logout of Veritone').action(async function () {
   try {
     await logout();
     console.log(chalk.blue.bold("Byeeeee"));
@@ -39,34 +48,62 @@ program.command('logout').alias('lO').description('Logout of Org').action(async 
   }
 });
 
-program.command('listTDO').alias('a').description('List TDOS Ids').action(function () {
-  prompt(questions.ListTDOQuestions).then(function (answers) {
-    return listTDO(answers);
-  });
-});
-
-program.command('createTDO').alias('a').description('Create a TDO from a local file').action(function () {
-  prompt(questions.CreateTDOQuestions).then(function (answers) {
-    return createTDOWithAsset(answers);
-  });
-});
-
-program.command('createTDOWithJob').alias('a').description('Create a TDO from a local file').action(function () {
-  prompt(questions.CreateTDOWithJobQuestions).then(function (answers) {
-    return createTDOWithJob(answers);
-  });
-});
-
-program.command('createJob').alias('r').description('Create a Job').action(function () {
-  prompt(questions.CreateJobQuestions).then(function (answers) {
-    return createJob(answers);
-  });
-});
-
-program.command('getLogs').alias('r').description('Get the logs for a recording').action(async function () {
+program.command('listAllTDO').alias('lA').description('List all TDOS Ids').action(async function () {
   try {
     await checkForAuth();
-    var answers = prompt(questions.GetLogQuestions);
+    var answers = await prompt(questions.ListTDOQuestions);
+    listTDO(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
+});
+
+program.command('createTDO').alias('cT').description('Create a TDO from a local file').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.CreateTDOQuestions);
+    createTDOWithAsset(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
+});
+
+program.command('createTDOWithJob').alias('cTJ').description('Create a TDO with a job from a local file').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.CreateTDOWithJobQuestions);
+    createTDOWithJob(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
+});
+
+program.command('createJob').alias('cJ').description('Create a Job').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.CreateJobQuestions);
+    createJob(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
+});
+
+program.command('getLogs').alias('gL').description('Get the logs for a recording').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.GetLogQuestions);
     getLogs(answers);
   } catch (err) {
     if (err === 'UnAuthenticated') {
@@ -76,51 +113,30 @@ program.command('getLogs').alias('r').description('Get the logs for a recording'
   }
 });
 
-// program
-//   .command('getLogs')
-//   .alias('r')
-//   .description('Get the logs for a recording')
-//   .action(async () => {
-//     try {
-//       await checkForAuth();
-//       const answers = prompt(questions.GetLogQuestions);
-
-//     } catch (err) {
-//       if (err === 400) {
-//         console.log(chalk.blue('Must be Logged In!'));
-
-//       }
-//       console.log(err);
-//     }
-
-//   })
-program.command('listEngines').alias('r').description('Get the logs for a recording').action(function () {
-  prompt(questions.ListTDOQuestions).then(function (answers) {
-    return listEngines(answers);
-  });
+program.command('listEngines').alias('lE').description('Get a list of engines').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.ListTDOQuestions);
+    listEngines(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
 });
 
-program.command('createLibraryEntity').alias('r').description('Get the logs for a recording').action(function () {
-  prompt(questions.createLibraryEntity).then(function (answers) {
-    return createLibraryEntity(answers);
-  });
+program.command('createLibraryEntity').alias('cLE').description('Create a library entity').action(async function () {
+  try {
+    await checkForAuth();
+    var answers = await prompt(questions.createLibraryEntity);
+    createLibraryEntity(answers);
+  } catch (err) {
+    if (err === 'UnAuthenticated') {
+      console.log(chalk.red("You need to login!"));
+    }
+    console.log('Error: ' + err);
+  }
 });
-
-// program
-//   .command('nestedLog')
-//   .alias('nL')
-//   .description('Get the logs for a recording')
-//   .action(() => {
-//     prompt(questions.loginQuestions)
-//       .then(answers =>
-//         login(answers))
-//       .then((answers) => {
-//         prompt(questions.GetLogQuestions).then(answers => {
-//           getLogs(answers)
-//         });
-
-//       })
-//   })
-
 
 program.parse(process.argv);

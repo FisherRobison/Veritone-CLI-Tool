@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-const questions = require('./questions')
 const program = require('commander');
+const chalk = require("chalk");
+const inquirer = require('inquirer'); // require inquirerjs library
+
+const questions = require('./questions')
 // Require logic.js file and extract controller functions using JS destructuring assignment
 const { listTDO, listEngines, createTDOWithAsset, createJob, createTDOWithJob, getLogs, createLibraryEntity, login, logout, checkForAuth } = require('./logic');
-const inquirer = require('inquirer'); // require inquirerjs library
-var prompt = inquirer.createPromptModule();
-const chalk = require("chalk");
+const prompt = inquirer.createPromptModule();
 
 
 
@@ -18,132 +19,160 @@ program
   .command('login')
   .alias('l')
   .description('Login to veritone')
-  .action(() => {
-    prompt(questions.loginQuestions).then(answers =>
-      login(answers).then(response =>{
-        console.log(chalk.green.bold(response))
-      }));
+  .action(async () => {
+    try {
+      const answers = await prompt(questions.loginQuestions);
+      const res = await login(answers);
+      console.log(chalk.green.bold(res));
+      //  if(res === 'unpwError'){
+      //   console.log(chalk.red.bold(res));
+      //  }else{
+      //   console.log(chalk.green.bold(res));
+      //  }
+    } catch (err) {
+      //chalk.red.bold(res)
+      console.log(chalk.red.bold(err))
+
+    }
   });
 program
   .command('logout')
   .alias('lO')
-  .description('Logout of Org')
-  .action( async () => {
-    try{
+  .description('Logout of Veritone')
+  .action(async () => {
+    try {
       await logout();
       console.log(chalk.blue.bold("Byeeeee"))
-    }catch(err){
+    } catch (err) {
       console.log(`Error: ${err}`)
     }
   });
 
 program
-  .command('listTDO')
-  .alias('a')
-  .description('List TDOS Ids')
-  .action(() => {
-    prompt(questions.ListTDOQuestions).then(answers =>
-      listTDO(answers));
+  .command('listAllTDO')
+  .alias('lA')
+  .description('List all TDOS Ids')
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.ListTDOQuestions);
+      listTDO(answers);
+
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   });
 
 program
   .command('createTDO')
-  .alias('a')
+  .alias('cT')
   .description('Create a TDO from a local file')
-  .action(() => {
-    prompt(questions.CreateTDOQuestions).then(answers =>
-      createTDOWithAsset(answers));
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.CreateTDOQuestions);
+      createTDOWithAsset(answers);
+
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   });
 
 program
   .command('createTDOWithJob')
-  .alias('a')
-  .description('Create a TDO from a local file')
-  .action(() => {
-    prompt(questions.CreateTDOWithJobQuestions).then(answers =>
-      createTDOWithJob(answers));
+  .alias('cTJ')
+  .description('Create a TDO with a job from a local file')
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.CreateTDOWithJobQuestions);
+      createTDOWithJob(answers);
+
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   });
 
 program
   .command('createJob')
-  .alias('r')
+  .alias('cJ')
   .description('Create a Job')
-  .action(() => {
-    prompt(questions.CreateJobQuestions).then(answers =>
-      createJob(answers));
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.CreateJobQuestions);
+      createJob(answers);
+
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   });
 
 
 program
   .command('getLogs')
-  .alias('r')
+  .alias('gL')
   .description('Get the logs for a recording')
   .action(async () => {
-    try{
-    await checkForAuth();
-    const answers  = prompt(questions.GetLogQuestions);
-    getLogs(answers);
-  }catch(err){
-    if(err === 'UnAuthenticated'){
-      console.log(chalk.red("You need to login!"));
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.GetLogQuestions);
+      getLogs(answers);
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
     }
-    console.log(`Error: ${err}`)
-  }
 
   })
 
-// program
-//   .command('getLogs')
-//   .alias('r')
-//   .description('Get the logs for a recording')
-//   .action(async () => {
-//     try {
-//       await checkForAuth();
-//       const answers = prompt(questions.GetLogQuestions);
-
-//     } catch (err) {
-//       if (err === 400) {
-//         console.log(chalk.blue('Must be Logged In!'));
-
-//       }
-//       console.log(err);
-//     }
-
-//   })
 program
   .command('listEngines')
-  .alias('r')
-  .description('Get the logs for a recording')
-  .action(() => {
-    prompt(questions.ListTDOQuestions).then(answers =>
-      listEngines(answers));
+  .alias('lE')
+  .description('Get a list of engines')
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.ListTDOQuestions);
+      listEngines(answers);
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   })
 
 program
   .command('createLibraryEntity')
-  .alias('r')
-  .description('Get the logs for a recording')
-  .action(() => {
-    prompt(questions.createLibraryEntity).then(answers =>
-      createLibraryEntity(answers));
+  .alias('cLE')
+  .description('Create a library entity')
+  .action(async () => {
+    try {
+      await checkForAuth();
+      const answers = await prompt(questions.createLibraryEntity);
+      createLibraryEntity(answers);
+    } catch (err) {
+      if (err === 'UnAuthenticated') {
+        console.log(chalk.red("You need to login!"));
+      }
+      console.log(`Error: ${err}`)
+    }
   })
 
-
-// program
-//   .command('nestedLog')
-//   .alias('nL')
-//   .description('Get the logs for a recording')
-//   .action(() => {
-//     prompt(questions.loginQuestions)
-//       .then(answers =>
-//         login(answers))
-//       .then((answers) => {
-//         prompt(questions.GetLogQuestions).then(answers => {
-//           getLogs(answers)
-//         });
-
-//       })
-//   })
 
 
 

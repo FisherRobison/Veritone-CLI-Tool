@@ -6,7 +6,7 @@ const loginQuestions = [
     message: "How would you like to login?",
     choices: ['API', 'Basic Authentication']
   },{
-    type: 'input',
+    type: 'password',
     name: 'apiKey',
     message: 'Input your API Key',
     when: function(answers) {
@@ -87,7 +87,7 @@ const loginQuestions = [
   },{
     type : 'checkbox',
     name : 'engineIds',
-     choices: [
+    choices: [
     'Transcription',
     'OCR',
     'Object',

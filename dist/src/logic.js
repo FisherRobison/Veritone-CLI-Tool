@@ -21,11 +21,12 @@ var download = function download(uri, filename, callback) {
 };
 
 var login = async function login(answers) {
-  var API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
-  var query = 'mutation userLogin{\n  userLogin(input:{\n    userName:"' + answers.userName + '"\n\t\tpassword:"' + answers.password + '"\n  }){\n    token\n  }\n}';
+  console.log("Hey the login choice is");
+  console.log(answers.loginChoice);
 
-  try {
+  if (answers.loginChoice === 'Basic Authentication') {
+    var query = 'mutation userLogin{\n  userLogin(input:{\n    userName:"' + answers.userName + '"\n\t\tpassword:"' + answers.password + '"\n  }){\n    token\n  }\n}';
 
     var res = await fetch(BASE_URL, {
       method: 'POST',
@@ -36,24 +37,23 @@ var login = async function login(answers) {
         query: query
       })
     });
-    //data: { userLogin: { token } },
 
     var _ref = await res.json(),
         data = _ref.data,
         errors = _ref.errors;
 
     if (errors) {
-      throw "UserName/Password do not match";
+      throw "Username/Password do not match";
     }
     var token = data.userLogin.token;
     // const data = await res.json();
     // console.log(data)
 
     keytar.setPassword('veritoneCLI', 'Login', token);
-    return "Succesfully Authenticated";
-  } catch (err) {
-    console.log(err);
+  } else {
+    keytar.setPassword('veritoneCLI', 'Login', answers.apiKey);
   }
+  return "Succesfully Authenticated";
 };
 
 // const checkForAuth = async () => {
@@ -117,26 +117,26 @@ var listTDO = async function listTDO(questions) {
 
   var query = '{\n  temporalDataObjects(limit: ' + questions.limit + ') {\n    count\n    records {\n      id\n    } \n  }\n  }\n';
 
-  fetch(BASE_URL, {
+  var res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       Authorization: 'Bearer ' + API_KEY,
       'content-type': 'application/json'
     },
     body: JSON.stringify({ query: query })
-  }).then(function (res) {
-    return res.json();
-  }).then(function (cb) {
-    return cb.data.temporalDataObjects.records.map(function (tdo) {
-      return console.log(tdo.id);
-    });
-  }).catch(function (err) {
-    console.log('error', err);
+  });
+
+  var cb = await res.json();
+  //console.log(cb);
+  cb.data.temporalDataObjects.records.map(function (tdo) {
+    return console.log(tdo.id);
   });
 };
 
-var createJob = function createJob(questions) {
+var createJob = async function createJob(questions) {
   var recordingId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+  var API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
   console.log(recordingId, questions);
   var engineList = [];
@@ -155,26 +155,28 @@ var createJob = function createJob(questions) {
 
   var query = 'mutation{\n  createJob(input:{\n    targetId: "' + (recordingId ? recordingId : questions.recordingId) + '"\n     tasks:[' + engineList + '  \n    ]\n  }){\n    id\n  }\n}\n';
 
-  fetch(BASE_URL, {
+  var res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       Authorization: 'Bearer ' + API_KEY,
       'content-type': 'application/json'
     },
     body: JSON.stringify({ query: query })
-  }).then(function (res) {
-    return res.json();
-  }).then(function (cb) {
-    return console.log(cb);
-  }).catch(function (err) {
-    console.log('error', err);
   });
+
+  var cb = await res.json();
+  console.log(cb);
+  // .then(res => res.json())
+  // .then(cb => console.log(cb))
+  // .catch(function (err) {
+  //   console.log('error', err);
+  // });
 };
 
 var getLogs = async function getLogs(questions) {
-  try {
+  var API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
-    console.log(questions);
+  try {
     var query = 'query{\n  temporalDataObject(id:"' + questions.recordingId + '"){\n    tasks{\n      records{\n        id\n        engine{\n          id\n          name\n        }\n        status\n        log{\n          uri\n        }\n      }\n    }\n  }\n}';
 
     fetch(BASE_URL, {
@@ -200,15 +202,18 @@ var getLogs = async function getLogs(questions) {
   }
 };
 
-var createTDOWithJob = function createTDOWithJob(questions) {
+var createTDOWithJob = async function createTDOWithJob(questions) {
+  var API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
+
   var CreateTDO = 'mutation {\n  createTDOWithAsset(\n    input: {\n      startDateTime: 1507128535\n      stopDateTime: 1507128542\n      contentType: "video/mp4"\n      assetType: "media"\n    } ) {\n    id\n    status\n    assets{\n      records {\n        id\n        type\n        signedUri\n        contentType\n      }\n    }    \n  }\n}';
 
   var formData = new FormData();
 
-  formData.append("file", fs.createReadStream('./' + questions.file));
+  formData.append("file", fs.createReadStream('' + questions.file));
   formData.append("filename", 'testing');
   formData.append("query", CreateTDO);
-
+  console.log("Questions");
+  console.log(questions);
   fetch(BASE_URL, {
     method: 'POST',
     headers: {
@@ -252,7 +257,8 @@ var listEngines = async function listEngines(questions) {
   // }
 };
 
-var createLibraryEntity = function createLibraryEntity(questions) {
+var createLibraryEntity = async function createLibraryEntity(questions) {
+  var API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
   var query = 'mutation{\n  createEntity(input:{\n    name:"' + questions.entityName + '",\n    libraryId:"d6e89f3a-4674-46f4-bfe9-9c8534a55d8d"\n  })\n  {\n    jsondata\n  }\n}';
 

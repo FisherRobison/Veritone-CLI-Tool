@@ -21,8 +21,11 @@ const download = function (uri, filename, callback) {
 
 
 const login = async (answers) => {
-  const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
+  console.log("Hey the login choice is");
+  console.log(answers.loginChoice);
+
+  if(answers.loginChoice === 'Basic Authentication'){
   const query = `mutation userLogin{
   userLogin(input:{
     userName:"${answers.userName}"
@@ -32,7 +35,6 @@ const login = async (answers) => {
   }
 }`;
 
-  try {
 
     const res = await fetch(BASE_URL, {
       method: 'POST',
@@ -43,20 +45,23 @@ const login = async (answers) => {
         query
       })
     })
-    //data: { userLogin: { token } },
     const { data, errors } = await res.json();
     if (errors) {
-      throw "UserName/Password do not match"
+      throw "Username/Password do not match"
     }
     let token = data.userLogin.token;
     // const data = await res.json();
     // console.log(data)
 
     keytar.setPassword('veritoneCLI', 'Login', token);
-    return "Succesfully Authenticated"
-  } catch (err) {
-    console.log(err);
   }
+    else{
+      keytar.setPassword('veritoneCLI', 'Login', answers.apiKey);
+
+    }
+    return "Succesfully Authenticated"
+  
+  
 };
 
 // const checkForAuth = async () => {
@@ -159,7 +164,7 @@ const listTDO = async (questions) => {
   }
 `;
 
-  fetch(BASE_URL, {
+  const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${API_KEY}`,
@@ -167,17 +172,17 @@ const listTDO = async (questions) => {
     },
     body: JSON.stringify({ query })
   })
-    .then(res => res.json())
-    .then(cb => cb.data.temporalDataObjects.records.map(tdo => console.log(tdo.id)
 
-    ))
-    .catch(function (err) {
-      console.log('error', err);
-    });
+    const cb = await res.json();
+    //console.log(cb);
+    cb.data.temporalDataObjects.records.map(tdo => console.log(tdo.id));
+
 }
 
 
-const createJob = (questions, recordingId = null) => {
+const createJob = async (questions, recordingId = null) => {
+  const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
+
   console.log(recordingId, questions)
   let engineList = []
   questions.engineIds.map((engine) => {
@@ -204,25 +209,28 @@ const createJob = (questions, recordingId = null) => {
 }
 `;
 
-  fetch(BASE_URL, {
+  const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${API_KEY}`,
       'content-type': 'application/json'
     },
     body: JSON.stringify({ query })
-  })
-    .then(res => res.json())
-    .then(cb => console.log(cb))
-    .catch(function (err) {
-      console.log('error', err);
-    });
+  });
+
+  const cb = await res.json();
+  console.log(cb);
+    // .then(res => res.json())
+    // .then(cb => console.log(cb))
+    // .catch(function (err) {
+    //   console.log('error', err);
+    // });
 }
 
 const getLogs = async (questions) => {
-  try {
+  const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
-    console.log(questions);
+  try {
     const query = `query{
   temporalDataObject(id:"${questions.recordingId}"){
     tasks{
@@ -262,7 +270,9 @@ const getLogs = async (questions) => {
   }
 }
 
-const createTDOWithJob = (questions) => {
+const createTDOWithJob = async (questions) => {
+  const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
+
   const CreateTDO = `mutation {
   createTDOWithAsset(
     input: {
@@ -287,11 +297,11 @@ const createTDOWithJob = (questions) => {
 
   const formData = new FormData();
 
-  formData.append("file", fs.createReadStream(`./${questions.file}`));
+  formData.append("file", fs.createReadStream(`${questions.file}`));
   formData.append("filename", 'testing')
   formData.append("query", CreateTDO)
-
-
+console.log("Questions");
+console.log(questions);
   fetch(BASE_URL, {
     method: 'POST',
     headers: {
@@ -342,7 +352,8 @@ const res = await fetch(BASE_URL, {
 }
 
 
-const createLibraryEntity = (questions) => {
+const createLibraryEntity = async (questions) => {
+  const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
   const query = `mutation{
   createEntity(input:{
