@@ -5,11 +5,7 @@ const inquirer = require('inquirer'); // require inquirerjs library
 
 const questions = require('./questions')
 // Require logic.js file and extract controller functions using JS destructuring assignment
-<<<<<<< HEAD
 const { listTDO, listEngines, createTDOWithAsset, createJob, createTDOWithJob, getLogs, createLibraryEntity, login, logout, checkForAuth, ytSearch, ytSearchUploader, whiteListEngine } = require('./logic');
-=======
-const { listTDO, listEngines, createTDOWithAsset, createJob, createTDOWithJob, getLogs, createLibraryEntity, login, logout, checkForAuth } = require('./logic');
->>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 const prompt = inquirer.createPromptModule();
 
 
@@ -39,7 +35,6 @@ program
 
     }
   });
-<<<<<<< HEAD
 
   program
     .command('youtube')
@@ -85,8 +80,6 @@ program
       }
     });
 
-=======
->>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 program
   .command('logout')
   .alias('lO')
@@ -225,7 +218,6 @@ program
     }
   })
 
-<<<<<<< HEAD
   program
   .command('whiteListEngine')
   .alias('white')
@@ -243,8 +235,6 @@ program
     }
   })
 
-=======
->>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 
 
