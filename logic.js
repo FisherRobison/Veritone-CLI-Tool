@@ -1,14 +1,12 @@
 require('isomorphic-fetch');
 require('dotenv').config();
 
-const assert = require('assert'); // N.B: Assert module comes bundled with Node.js.
 const FormData = require('form-data');
 const fs = require('fs');
 const request = require('request');
 const keytar = require('keytar')
 const search = require('youtube-search');
 const youtubedl = require('youtube-dl');
-const rimraf = require('rimraf');
 var path = require('path');
 var readdir = require('fs-readdir-promise');
 
@@ -84,30 +82,9 @@ veritoneList = files.filter(filename => ! /^\..*/.test(filename));
 console.log(veritoneList);
 
 await veritoneList.map(file => createTDOYoutube(answers, file));
-//rimraf(__dirname + '/tmp/*', function () { console.log('done'); });
-   
-
-  // youtubedl.getInfo(url, function(err, info) {
-  //   if (err) throw err;
-  //   let video = youtubedl(url,
-  //   // Optional arguments passed to youtube-dl.
-  //   ['--format=22'],
-  //   // Additional options can be given for calling `child_process.execFile()`.
-  //   { cwd: __dirname });
-  //   console.log('id:', info.id);
-  //   console.log('title:', info.title);
-  //   console.log('url:', info.url);
-  //   console.log('thumbnail:', info.thumbnail);
-  //   console.log('description:', info.description);
-  //   console.log('filename:', info._filename);
-  //   console.log('format id:', info.format_id);
-  //   video.pipe(fs.createWriteStream(`${info._filename}`));
-
    });
    
-  // video.pipe(fs.createWriteStream('myvideo.mp4'));
-
-  // });
+ 
  }
 
 
