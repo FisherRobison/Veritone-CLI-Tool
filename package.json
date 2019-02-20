@@ -1,7 +1,7 @@
 {
   "name": "veritone-cli",
-  "version": "1.0.0",
-  "description": "A Node.js CLI tool that exposes common Veritone API workflows ",
+  "version": "1.0.3",
+  "description": "A Node.js CLI tool that exposes common Veritone API workflows",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

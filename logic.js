@@ -166,9 +166,10 @@ const logout = async () => {
     console.log(err);
   }
 };
+
 const createTDOYoutube = async (answers, file) => {
   const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
-
+try{
   const CreateTDO = `mutation {
   createTDOWithAsset(
     input: {
@@ -199,26 +200,31 @@ const createTDOYoutube = async (answers, file) => {
   formData.append("query", CreateTDO)
 
 
-  fetch(BASE_URL, {
+  const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${API_KEY}`
     },
     body: formData
   })
-    .then((res) => res.json())
-    .then((cb) => {
-      console.log("++++++++++++++++++++++++++++++++++++++++++++++++Callback");
-      console.log(cb);
+    const cb = await res.json();
+    createJob(answers, cb.data.createTDOWithAsset.id);
+    await fs.unlinkSync(`${__dirname + '/tmp/'}${file}`);
+}catch(err){
+  console.log(err);
+}
+    // .then((cb) => {
+    //   console.log("++++++++++++++++++++++++++++++++++++++++++++++++Callback");
+    //   console.log(cb);
 
-      createJob(answers, cb.data.createTDOWithAsset.id);
-      fs.unlinkSync(`${__dirname + '/tmp/'}${file}`);
+    //   createJob(answers, cb.data.createTDOWithAsset.id);
+    //   fs.unlinkSync(`${__dirname + '/tmp/'}${file}`);
 
-    })
-    .catch(function (err) {
-      console.log('error', err);
+    // })
+    // .catch(function (err) {
+    //   console.log('error', err);
 
-    });
+    // });
 
 }
 
