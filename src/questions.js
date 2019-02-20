@@ -41,6 +41,7 @@ const loginQuestions = [
 ];
 
 
+<<<<<<< HEAD
 //Youtube Downloader Questions
 
 const ytQuestions = [
@@ -88,6 +89,9 @@ const nListQuestions = [
     message : 'What would you like to do?'
   }
 ];
+=======
+
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 
 
@@ -174,7 +178,10 @@ module.exports = {
     CreateTDOWithJobQuestions,
     GetLogQuestions,
     createLibraryEntity,
+<<<<<<< HEAD
     ytQuestions,
     nListQuestions
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
     
 }

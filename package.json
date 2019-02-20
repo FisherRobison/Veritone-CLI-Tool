@@ -2,11 +2,19 @@
   "name": "veritone-cli",
   "version": "1.0.0",
   "description": "",
+<<<<<<< HEAD
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist/ && babel ./src --out-dir ./dist --copy-files",
     "start": "npm run build && node src/index.js"
+=======
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/src/index.js"
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
   },
   "author": "",
   "license": "ISC",
@@ -15,13 +23,20 @@
     "commander": "^2.16.0",
     "dotenv": "^6.2.0",
     "form-data": "^2.3.2",
+<<<<<<< HEAD
     "fs-readdir-promise": "^1.0.1",
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
     "inquirer": "^6.0.0",
     "isomorphic-fetch": "^2.2.1",
     "keytar": "^4.3.0",
     "request": "^2.87.0",
+<<<<<<< HEAD
     "youtube-dl": "^1.12.2",
     "youtube-search": "^1.1.4"
+=======
+    "twilio": "^3.19.2"
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -29,6 +44,10 @@
     "rimraf": "^2.6.2"
   },
   "bin": {
+<<<<<<< HEAD
     "veritone": "./dist/index.js"
+=======
+    "veritone": "./dist/src/index.js"
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
   }
 }

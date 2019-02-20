@@ -31,11 +31,7 @@ $ veritone --help
     createJob|cJ             Create a Job
     getLogs|gL               Get the logs for a recording
     listEngines|lE           Get a list of engines
-<<<<<<< HEAD
-    createLibraryEntity|cLE  Create a library entity
-=======
     createLibraryEntity|cLE  Create a library enti
->>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 ```
 

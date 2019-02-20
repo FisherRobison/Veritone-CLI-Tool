@@ -6,12 +6,15 @@ const FormData = require('form-data');
 const fs = require('fs');
 const request = require('request');
 const keytar = require('keytar')
+<<<<<<< HEAD
 const search = require('youtube-search');
 const youtubedl = require('youtube-dl');
 const rimraf = require('rimraf');
 var path = require('path');
 var readdir = require('fs-readdir-promise');
 
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 // const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 const BASE_URL = 'https://api.veritone.com/v3/graphql';
@@ -25,6 +28,7 @@ const download = function (uri, filename, callback) {
 };
 
 
+<<<<<<< HEAD
  
 
  const ytSearch = (answers) =>{
@@ -110,6 +114,8 @@ await veritoneList.map(file => createTDOYoutube(answers, file));
   // });
  }
 
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 const login = async (answers) => {
 
@@ -189,6 +195,7 @@ const logout = async () => {
     console.log(err);
   }
 };
+<<<<<<< HEAD
 const createTDOYoutube = async (answers, file) => {
   const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
@@ -244,6 +251,9 @@ const createTDOYoutube = async (answers, file) => {
     });
 
 }
+=======
+
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 
 
 const createTDOWithAsset = async (questions) => {
@@ -296,6 +306,7 @@ const createTDOWithAsset = async (questions) => {
 
 }
 
+<<<<<<< HEAD
 
 
 
@@ -345,6 +356,8 @@ const whiteListEngine = async (questions) => {
 
 
 
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
 const listTDO = async (questions) => {
   const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
@@ -378,6 +391,7 @@ const createJob = async (questions, recordingId = null) => {
   const API_KEY = await keytar.getPassword('veritoneCLI', 'Login');
 
   console.log(recordingId, questions)
+<<<<<<< HEAD
   let engineList = [];
   engineList.push(`{engineId: "insert-into-index"}`);
 
@@ -395,15 +409,35 @@ const createJob = async (questions, recordingId = null) => {
         break;
       default:
     }
+=======
+  let engineList = []
+  questions.engineIds.map((engine) => {
+    switch (engine) {
+      case 'Transcription':
+        engineList.push(`{engineId: "transcribe-speechmatics-container-en-us"},`);
+      case 'OCR':
+        engineList.push(`{engineId: "imagedetection-ocr-google"},`);
+      case 'Object':
+        engineList.push(`{engineId: "imagedetection-objectrecognition-clarifai"},`);
+
+    }
+    return engineList
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
   })
 
   const query = `mutation{
   createJob(input:{
+<<<<<<< HEAD
     targetId: "${ recordingId ? recordingId : questions.recordingId}",
      tasks:[${engineList}  
     ]
     isReprocessJob:true
 
+=======
+    targetId: "${ recordingId ? recordingId : questions.recordingId}"
+     tasks:[${engineList}  
+    ]
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
   }){
     id
   }
@@ -528,7 +562,10 @@ const listEngines =  async (questions) => {
     records{
       id
       name
+<<<<<<< HEAD
       runtimeType
+=======
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
     }
   }
 }
@@ -591,4 +628,8 @@ const createLibraryEntity = async (questions) => {
 
 
 // Export all methods
+<<<<<<< HEAD
 module.exports = { createTDOWithAsset, listTDO, createJob, createTDOWithJob, getLogs, listEngines, createLibraryEntity, login, logout, checkForAuth, ytSearch, ytSearchUploader, whiteListEngine };
+=======
+module.exports = { createTDOWithAsset, listTDO, createJob, createTDOWithJob, getLogs, listEngines, createLibraryEntity, login, logout, checkForAuth };
+>>>>>>> 16bf2e161ad35a23dd891c4180162af486568bbe
