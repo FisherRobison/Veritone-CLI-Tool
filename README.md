@@ -1,7 +1,7 @@
 # Veritone-CLI-Tool
 
 
-> A Node.js CLI tool that exposes common veritone API workflows 
+> A Node.js CLI tool that exposes common Veritone API workflows 
 
 ## Installation
 ```bash
